@@ -1,9 +1,7 @@
 name: Build and push Docker image to Docker Hub
 
 on:
-  push:
-    tags:
-      - "v*"
+  workflow_dispatch:
 
 jobs:
   build-and-push:
