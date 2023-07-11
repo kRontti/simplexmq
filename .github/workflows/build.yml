@@ -1,4 +1,4 @@
-name: build
+name: Build
 
 on:
   workflow_dispatch:
@@ -17,28 +17,18 @@ jobs:
       - name: Clone project
         uses: actions/checkout@v2
 
-      - name: Setup Haskell
-        uses: haskell/actions/setup@v1
-        with:
-          ghc-version: "8.8.1"
-          cabal-version: "latest"
-          
-      - name: Cache dependencies
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cabal/store
-            dist-newstyle
-          key: ${{ matrix.os }}-${{ hashFiles('cabal.project', 'simplexmq.cabal') }}
-
       - name: Build
         shell: bash
-        run: cabal build --enable-tests
-
-      - name: Prepare binaries
+        run: |
+          DOCKER_BUILDKIT=1 docker build -t local/smp-server --build-arg APP="smp-server" --build-arg APP_PORT="5223" . # For xmp-server
+          DOCKER_BUILDKIT=1 docker build -t local/xftp-server --build-arg APP="xftp-server" --build-arg APP_PORT="443" . # For xftp-server
+      - name: Start docker
         shell: bash
         run: |
-          mv $(cabal list-bin smp-server) smp-server-ubuntu-${{ matrix.platform_name}}
-          mv $(cabal list-bin ntf-server) ntf-server-ubuntu-${{ matrix.platform_name}}
-          mv $(cabal list-bin xftp-server) xftp-server-ubuntu-${{ matrix.platform_name}}
-          mv $(cabal list-bin xftp) xftp-ubuntu-${{ matrix.platform_name}}
+          docker run -d \
+          -e "ADDR=radio.rontti.org" \
+          -e "PASS=Dpp31415926!" \
+          -p 5223:5223 \
+          -v $HOME/simplex/smp/config:/etc/opt/simplex:z \
+          -v $HOME/simplex/smp/logs:/var/opt/simplex:z \
+          simplexchat/smp-server:latest
