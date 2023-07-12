@@ -31,4 +31,4 @@ jobs:
           -p 5223:5223 \
           -v $HOME/simplex/smp/config:/etc/opt/simplex:z \
           -v $HOME/simplex/smp/logs:/var/opt/simplex:z \
-          simplexchat/smp-server:latest
+          local/smp-server
