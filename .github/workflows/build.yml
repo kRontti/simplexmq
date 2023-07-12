@@ -12,7 +12,7 @@ jobs:
       matrix:
         include:
           - arch: aarch64
-            distro: ubuntu18.04
+            distro: ubuntu20.04
     steps:
       - name: Clone project
         uses: actions/checkout@v2
@@ -26,6 +26,7 @@ jobs:
         shell: bash
         run: |
           docker run -d \
+          --name smp-server \
           -e "ADDR=radio.rontti.org" \
           -e "PASS=Dpp31415926!" \
           -p 5223:5223 \
@@ -34,10 +35,11 @@ jobs:
           local/smp-server
 
           docker run -d \
-              -e "ADDR=radio.rontti.org" \
-              -e "QUOTA=50" \
-              -p 443:443 \
-              -v $HOME/simplex/xftp/config:/etc/opt/simplex-xftp:z \
-              -v $HOME/simplex/xftp/logs:/var/opt/simplex-xftp:z \
-              -v $HOME/simplex/xftp/files:/srv/xftp:z \
-              local/xftp-server
+          --name xftp-server \
+          -e "ADDR=radio.rontti.org" \
+          -e "QUOTA=50" \
+          -p 443:443 \
+          -v $HOME/simplex/xftp/config:/etc/opt/simplex-xftp:z \
+          -v $HOME/simplex/xftp/logs:/var/opt/simplex-xftp:z \
+          -v $HOME/simplex/xftp/files:/srv/xftp:z \
+          local/xftp-server
