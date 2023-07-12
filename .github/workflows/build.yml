@@ -32,3 +32,12 @@ jobs:
           -v $HOME/simplex/smp/config:/etc/opt/simplex:z \
           -v $HOME/simplex/smp/logs:/var/opt/simplex:z \
           local/smp-server
+
+          docker run -d \
+              -e "ADDR=radio.rontti.org" \
+              -e "QUOTA=50" \
+              -p 443:443 \
+              -v $HOME/simplex/xftp/config:/etc/opt/simplex-xftp:z \
+              -v $HOME/simplex/xftp/logs:/var/opt/simplex-xftp:z \
+              -v $HOME/simplex/xftp/files:/srv/xftp:z \
+              simplexchat/xftp-server:latest
