@@ -40,4 +40,4 @@ jobs:
               -v $HOME/simplex/xftp/config:/etc/opt/simplex-xftp:z \
               -v $HOME/simplex/xftp/logs:/var/opt/simplex-xftp:z \
               -v $HOME/simplex/xftp/files:/srv/xftp:z \
-              simplexchat/xftp-server:latest
+              local/xftp-server
